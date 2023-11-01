@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Image, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Button, Image, SafeAreaView, Text, TextInput, TouchableHighlight, TouchableOpacity, View } from "react-native";
 
 import LoginPageStyle from "./LoginPageStyle";
 
@@ -15,6 +15,8 @@ import { BASE_URL } from "../../utilites/BaseURL";
 import checkEmail from "../../components/checkEmail";
 import { AUTHENTICATED, NOT_AUTHENTICATED } from "../../redux/auth/authTypes";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const LoginForm = () => {
   const dispatch = useDispatch();
  
@@ -28,8 +30,12 @@ const LoginForm = () => {
       "password": password
     }
   
-    await axios.post(`${BASE_URL}/api/v1/auth/login`, data).
-    then(res => dispatch({type: AUTHENTICATED, payload: {token: res.data.token, currentUser: data}}))
+    await axios.post(`${BASE_URL}auth/login`, data).
+    then(res => {
+      dispatch({type: AUTHENTICATED, payload: {token: res.data.token, currentUser: data}})
+      AsyncStorage.setItem("@TOKEN", res.data.token)
+      AsyncStorage.setItem("@EMAIL", data.email)
+    })
     .catch(failure => dispatch({type: NOT_AUTHENTICATED}));
   }
   
@@ -53,8 +59,13 @@ const LoginForm = () => {
         {
           checkEmail(email) ?  <SubmitButton disabled={false}/> : <SubmitButton disabled={true}/>
         }
+        <View id="not_registered_button_view" style={LoginPageStyle.not_registered_button_view}>
+          <TouchableOpacity id="not_registered_button" style={LoginPageStyle.not_registered_button}>
+                <Text id="not_registered_button_text" style={LoginPageStyle.not_registered_button_text}>Have not registered yet?</Text>
+          </TouchableOpacity>
+        </View>
+      
       </View>
-
     </SafeAreaView>
     )
 }

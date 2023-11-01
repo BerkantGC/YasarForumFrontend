@@ -1,8 +1,9 @@
 const Colors = {
-    BACKGROUND : "#282828",
-    DARKGREY: "#121212",
+    BACKGROUND : "#000000",
+    DARKGREY: "#252526",
     WHITE: "#FFFFFF",
-    BLUE: "#5e43f3"
+    BLUE: "#5e43f3",
+    WARNING: "fuchsia"
 }
 
 export default Colors;

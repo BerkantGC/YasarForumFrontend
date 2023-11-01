@@ -27,7 +27,6 @@ const AppStyles = StyleSheet.create({
     },
     warning_text: {
         marginHorizontal: 15, marginBottom: 5,
-        color: "#CF6679"
     },
     text_input: {
         backgroundColor: "white",
@@ -47,8 +46,18 @@ const AppStyles = StyleSheet.create({
     button_text: {
         color: "white",
         fontWeight: 'bold'
-    }
-
+    },
+    not_registered_button_view: {
+        marginHorizontal: 15
+    },
+    not_registered_button_text: {
+        width: "100%",
+        color: Colors.WARNING
+    },
+    not_registered_button: {
+        justifyContent: 'center',
+    },
+    
 });
 
 

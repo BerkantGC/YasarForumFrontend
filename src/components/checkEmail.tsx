@@ -1,5 +1,5 @@
 import { EMAIL_LENGTH, STUDENT_ID_LENGTH } from "../utilites/EmailLength";
-import isNumber from "./isNumber";
+import isNumber from "../utilites/isNumber";
 
 const checkEmail = (email: string) => {
 
