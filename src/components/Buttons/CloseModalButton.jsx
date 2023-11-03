@@ -23,9 +23,15 @@ const Style = StyleSheet.create({
     },
     iconStyle: {
         textShadowColor: 'red',
-        shadowOpacity: 1,
-        shadowRadius: 5,
-        textShadowOffset:{width: 5,height: 2},
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+
+        elevation: 5,
         color : 'white'
     }
 })

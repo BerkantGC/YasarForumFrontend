@@ -8,6 +8,9 @@ export const MainPageStyle = StyleSheet.create({
         justifyContent :'center',
         alignItems: 'center'
     },
+    header: {
+        justifyContent :'center'
+    },
     mainContainer:{
         flex:1,
         alignItems: "center"

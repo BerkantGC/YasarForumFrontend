@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Image, SafeAreaView, Text, TextInput, TouchableHighlight, TouchableOpacity, View } from "react-native";
+import { Button, Image, KeyboardAvoidingView, SafeAreaView, Text, TextInput, TouchableHighlight, TouchableOpacity, View } from "react-native";
 
 import LoginPageStyle from "./LoginPageStyle";
 
@@ -16,8 +16,9 @@ import checkEmail from "../../components/checkEmail";
 import { AUTHENTICATED, NOT_AUTHENTICATED } from "../../redux/auth/authTypes";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
-const LoginForm = () => {
+const LoginForm = ({navigation}) => {
   const dispatch = useDispatch();
  
   const [email, setEmail] = useState("");
@@ -43,29 +44,31 @@ const LoginForm = () => {
     return(
         <TouchableOpacity onPress={loginUser} disabled={props.disabled}>
           <View style={LoginPageStyle.button}>
-            <Text style={LoginPageStyle.button_text}>LOGIN</Text>
+            <Text style={LoginPageStyle.button_text}>GİRİŞ YAP</Text>
           </View>
         </TouchableOpacity>
     )
   }
   return(
     <SafeAreaView style={LoginPageStyle.main}>
+      <KeyboardAvoidingView behavior="padding" style={{width : '100%', height: '100%'}} enabled>
       <View id="container" style={LoginPageStyle.container}>
         <View id="logo_container" style={LoginPageStyle.logo_container}>
           <Image id="logo" source={require("../../images/MUGLogo.png")} style={LoginPageStyle.logo} />  
         </View>
-        <TextInput id="text_input_email" onChangeText={(value) => setEmail(value)} style={LoginPageStyle.text_input} placeholder="Student email" />
-        <TextInput id="text_input_password" onChangeText={(value) => setPassword(value)} style={LoginPageStyle.text_input} placeholder="Password" secureTextEntry />
+        <TextInput id="text_input_email" onChangeText={(value) => setEmail(value)} style={LoginPageStyle.text_input} placeholder="Öğrenci maili" />
+        <TextInput id="text_input_password" onChangeText={(value) => setPassword(value)} style={LoginPageStyle.text_input} placeholder="Şifre" secureTextEntry />
         {
           checkEmail(email) ?  <SubmitButton disabled={false}/> : <SubmitButton disabled={true}/>
         }
         <View id="not_registered_button_view" style={LoginPageStyle.not_registered_button_view}>
           <TouchableOpacity id="not_registered_button" style={LoginPageStyle.not_registered_button}>
-                <Text id="not_registered_button_text" style={LoginPageStyle.not_registered_button_text}>Have not registered yet?</Text>
+                <Text id="not_registered_button_text" style={LoginPageStyle.not_registered_button_text}>Henüz kayıt olmadın mı?</Text>
           </TouchableOpacity>
         </View>
       
       </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
     )
 }

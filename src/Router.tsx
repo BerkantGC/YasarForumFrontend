@@ -4,7 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import LoginPage from "./pages/loginPage/LoginPage"
-import { Provider, useSelector } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
 import { store } from "./redux/auth";
 import MainPage from "./pages/mainPage/MainPage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -16,18 +16,24 @@ const Tab = createBottomTabNavigator();
 import Ionicons from "react-native-vector-icons/Ionicons";
 import ProfilePage from "./pages/profilePage/ProfilePage";
 import Colors from "./utilites/Colors";
+import { AUTHENTICATED } from "./redux/auth/authTypes";
+import NotesPage from "./pages/notesPage/NotesPage";
 
 function Home() {
   return (
       <Tab.Navigator
         screenOptions={({ route }) => ({ headerShown: false, tabBarStyle: {height: 80} ,tabBarIcon: ({ focused, color, size }) => {
             let iconName;
-            if (route.name === 'Main') {
+
+            if (route.name === 'Ana Sayfa') {
               iconName = focused
                 ? 'home'
                 : 'home-outline';
-            } else if (route.name === 'Profile') {
+            } else if (route.name === 'Profil') {
               iconName = focused ? 'person' : 'person-outline';
+            } else if(route.name === 'Notlar')
+            {
+              iconName = focused ? 'reader' : 'reader-outline'
             }
             return <Ionicons name={iconName} size={size} color={color} />;
           },
@@ -35,21 +41,24 @@ function Home() {
           tabBarInactiveTintColor: Colors.DARKGREY,
         })}
       >
-        <Tab.Screen name="Main" component={MainPage} />
-        <Tab.Screen name="Profile" component={ProfilePage}/>
+        <Tab.Screen name="Ana Sayfa"  component={MainPage} />
+        <Tab.Screen name="Notlar" component={NotesPage}/>
+        <Tab.Screen name="Profil" component={ProfilePage}/>
       </Tab.Navigator>
   );
 }
 
 const AuthStack = () => {
-    const [token, setToken] = useState(null);
-
+    const dispatch = useDispatch();
+  
+    const token = useSelector(selector => selector.token)
+    
     const readData = async () => {
         try {
-          const value = await AsyncStorage.getItem("@TOKEN");
-      
-          if (value !== null) {
-            setToken(value);
+          const tokenValue = await AsyncStorage.getItem("@TOKEN");
+          const emailValue = await AsyncStorage.getItem("@EMAIL");
+          if (tokenValue !== null) {
+            dispatch({type: AUTHENTICATED, payload: {token: tokenValue, currentUser: {email: emailValue}}})
           }
         } catch (e) {
           console.log('Failed to fetch the input from storage');
@@ -63,7 +72,7 @@ const AuthStack = () => {
     <NavigationContainer>
         <Stack.Navigator screenOptions={{headerShown: false}}>
             {
-                token !== null ? <Stack.Screen name="Home" component={Home} options={{ headerShown: false }}/> : <Stack.Screen name="LOGIN" component={LoginPage}/>
+                token !== null ? <Stack.Screen name="Home" component={Home} options={{ headerShown: false }}/> : <Stack.Screen name="Login" component={LoginPage}/>
             }
         </Stack.Navigator>
     </NavigationContainer>

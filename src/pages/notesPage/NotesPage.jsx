@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {Modal, RefreshControl, SafeAreaView, ScrollView, Text, View } from "react-native";
-import { MainPageStyle } from "./MainPageStyle";
-import Post from "../../components/Post";
+import { MainPageStyle } from "../mainPage/MainPageStyle";
 
 import axios from "axios";
 import { BASE_URL } from "../../utilites/BaseURL";
@@ -9,6 +8,8 @@ import { BASE_URL } from "../../utilites/BaseURL";
 import CreatePost from "../../components/CreatePost";
 import OpenModalButton from "../../components/Buttons/OpenModalButton";
 import { useSelector } from "react-redux";
+import Note from "../../components/Note";
+import CreateNote from "../../components/CreateNote";
 
 const MainPage = ({navigation}) => {
     const [data, setData] = useState(null);
@@ -27,9 +28,9 @@ const MainPage = ({navigation}) => {
     }, []);
 
     async function fetchData(){        
-        await axios.get(BASE_URL + "post/all-posts", {headers: {"Authorization": `Bearer ${token}`}})
+        await axios.get(BASE_URL + "note/all-notes", {headers: {"Authorization": `Bearer ${token}`}})
         .then(res => {
-            setData(res.data.sort((a,b) => a.createdAt < b.createdAt ? 1 : -1))
+            setData(res.data.sort((a,b) => a.date < b.date ? 1 : -1))
         }).catch(err => console.log(err))
     }
 
@@ -47,16 +48,16 @@ const MainPage = ({navigation}) => {
                 setModalVisible(!modalVisible);
             } }>
                 <View style={MainPageStyle.centeredView}>
-                    <CreatePost modalVisible={modalVisible} setModalVisible={setModalVisible} />
+                    <CreateNote modalVisible={modalVisible} setModalVisible={setModalVisible} />
                 </View>
             </Modal>
             <View style={MainPageStyle.header}>
-                <Text style={{fontSize: 30, color: 'white'}}>GÖNDERİLER</Text>
+                <Text style={{fontSize: 30, color: 'white'}}>NOTLAR</Text>
             </View>
             <ScrollView refreshControl={<RefreshControl tintColor="white" refreshing={refreshing} onRefresh={onRefresh} /> }>
                 <View style={MainPageStyle.mainContainer}>
                     {data ? data.map(it => {
-                        return <Post item={it} key={it.post_id} />;
+                        return <Note item={it} key={it.note_id} />;
                     }) : null}
                 </View>
             </ScrollView>

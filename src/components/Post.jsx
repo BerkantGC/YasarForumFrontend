@@ -6,7 +6,24 @@ import Icon from "react-native-vector-icons/FontAwesome5";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 const Post = ({item}) => {
-    console.log(item)
+    let currentTime =  Math.floor((new Date().getTime() - new Date(item.createdAt).getTime()) / (1000 * 60));
+    let currentHour = currentTime/60
+    let currentDay = parseInt(currentHour/24)
+    if(currentDay > 365)
+    {
+        currentDay = parseInt(currentDay / 365) + " yıl önce"
+    }
+    else if(currentDay > 30)
+    {
+        currentDay = parseInt(currentDay / 30) + " ay önce"
+    }
+    else if(currentDay > 0) currentDay = parseInt(currentDay) + " gün önce"
+    else if(currentDay === 0){
+        if(currentHour > 1 )
+         currentDay = parseInt(currentHour) + " saat önce" 
+         else currentDay = currentTime + " dakika önce"
+        }
+
 
     return(
         <View style={Style.container}>
@@ -20,7 +37,7 @@ const Post = ({item}) => {
                     </Text>
                 </View>
                 <View style={Style.createdAt}>
-                        <Text style={{fontSize: 10}}>{ Math.floor((new Date().getTime() - new Date(item.createdAt).getTime()) / (1000 * 60 * 60 * 24))} days ago</Text>
+                        <Text style={{fontSize: 10}}>{currentDay}</Text>
                 </View>
             </View>
             <View style={Style.info}>
@@ -40,7 +57,7 @@ const Post = ({item}) => {
                     <TouchableOpacity>
                         <View style={Style.likeButton}>
                             <Icon name="paper-plane" color= "white" size={25}></Icon> 
-                            <Text style={{color: "white", fontSize: 10}}>30</Text>
+                            <Text style={{color: "white", fontSize: 10}}>Paylaş</Text>
                         </View>    
                     </TouchableOpacity>
                 </View>
@@ -51,7 +68,7 @@ const Post = ({item}) => {
 
 const Style=StyleSheet.create({
     container: {
-        width: Dimensions.get("screen").width/1.2,
+        width: Dimensions.get("screen").width/1.15,
         height: Dimensions.get("screen").height/3,
         marginVertical: 10,
         backgroundColor: "white",

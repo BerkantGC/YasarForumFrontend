@@ -9,8 +9,9 @@ import { BASE_URL } from "../utilites/BaseURL";
 import axios from "axios";
 
 export default function({modalVisible, setModalVisible}){
-    const [content, updateContent] = useState("");
-    const [isAnonymous, updateAnonymous] = useState(false);
+    const [title, updateTitle] = useState("");
+    const [description, updateDescription] = useState("");
+    const [isPublic, updatePublic] = useState(false);
 
     const postData = async() =>{
         const token = await AsyncStorage.getItem("@TOKEN");
@@ -20,17 +21,18 @@ export default function({modalVisible, setModalVisible}){
             user: {
                 email : email
             },
-            posts:  [{
-                content : content,
-                createdAt: new Date().toJSON(),
-                anonymous: isAnonymous,
+            notes:  [{
+                title : title,
+                description : description,
+                date: new Date().toJSON(),
+                isPublic: isPublic,
                 likes: 0,
                 isChecked: false,
                 activated: false
             }]
         }
 
-        await axios.put(BASE_URL + "post/", data, {headers: {"Authorization": `Bearer ${token}`}})
+        await axios.put(BASE_URL + "note/", data, {headers: {"Authorization": `Bearer ${token}`}})
         .then((res)=>{
             setModalVisible(false)
         }).catch((error)=>console.error(error))
@@ -38,54 +40,64 @@ export default function({modalVisible, setModalVisible}){
     }
 
     return(
-            <KeyboardAvoidingView behavior="padding" enabled style={Style.modalView}>
+        <KeyboardAvoidingView style={Style.modalView} behavior="padding" enabled>
             <CloseModalButton modalVisible={modalVisible} setModalVisible={setModalVisible}/>
             <View style={Style.createNewPost}>
-            <View style={{alignItems : 'center'}}>
-                <Text  style={{color: 'white'}}>Tarih: {new Date().toLocaleString()}</Text>
-            </View>
-                <View style={Style.newPostTitle}>
-                    <Text style={{color: 'white', fontSize: 18, fontWeight: 'bold'}}>Yeni Gönderi</Text>
+                <View style={{alignItems : 'center'}}>
+                    <Text>{new Date().toLocaleString()}</Text>
                 </View>
-                <TextInput maxLength={500} value={content} onChangeText={(e) => updateContent(e)} inputMode="text" multiline={true} style={Style.contentInput}/>
+                <View style={Style.newPostTitle}>
+                    <Text style={{fontSize: 15, fontWeight: 'bold'}}>Yeni Not</Text>
+                </View>
+                <Text>Başlık:</Text>
+                <TextInput maxLength={50} value={title} onChangeText={(e) => updateTitle(e)} inputMode="text" style={Style.titleInput}/>
+                <Text>Not:</Text>
+                <TextInput maxLength={500} value={description} onChangeText={(e) => updateDescription(e)} inputMode="text" multiline={true} style={Style.contentInput}/>
                 <View style={Style.checkAnonymous}>
-                    <BouncyCheckbox fillColor={Colors.BLUE} text="Gizli" 
-                    disableBuiltInState isChecked={isAnonymous} 
-                    onPress={() => updateAnonymous(!isAnonymous)} 
+                    <BouncyCheckbox fillColor={Colors.DARKGREY} text="Herkese açık" 
+                    disableBuiltInState isChecked={isPublic} 
+                    onPress={() => updatePublic(!isPublic)} 
                     textStyle = {Style.checkAnonymousText}
                     textContainerStyle={Style.checkAnonymousTextContainerStyle}/>
 
                     <TouchableOpacity onPress={postData} style={{alignItems : 'center'}}>
                         <View style={Style.shareButton}>
-                            <Text style={{color: 'white', fontSize: 13}}>PAYLAŞ</Text>
+                            <Text style={{fontSize: 13, color: 'white'}}>PAYLAŞ</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
                 
             </View>
-            </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
     )
 }
 
 const Style = StyleSheet.create({
     modalView: {
-        backgroundColor : Colors.BACKGROUND,
-        borderRadius:20,
+        backgroundColor : "lightblue",
         height: Dimensions.get("screen").height/1.15,
         width: Dimensions.get("screen").width/1,
-        alignItems : 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        alignItems : 'center'
     },
     createNewPost:{
         width: '90%',
     },
     newPostTitle: {
         marginVertical: 10,
-        justifyContent : 'center',
         alignItems : 'center'
     },
+    titleInput: {
+        backgroundColor : Colors.DARKGREY,
+        fontSize :15,
+        flexWrap : 'wrap',
+        padding : 10,
+        borderRadius: 10,
+        color : 'white',
+        marginBottom: 5
+    },
     contentInput: {
-        height: Dimensions.get("screen").height/3,
+        height: Dimensions.get("screen").height/4,
         backgroundColor : Colors.DARKGREY,
         fontSize :15,
         flexWrap : 'wrap',
@@ -97,19 +109,18 @@ const Style = StyleSheet.create({
     checkAnonymous: {
         marginTop : 5,
         flexDirection : 'row',
-
         justifyContent : 'space-between',
-        color : 'blue'
+        color : Colors.DARKGREY
     },
     checkAnonymousTextContainerStyle: {
         marginLeft: 5,
     },
     checkAnonymousText: {
         textDecorationLine : 'none',
-        color: Colors.BLUE
+        color : Colors.DARKGREY
     },
     shareButton: {
-        backgroundColor: Colors.BLUE,
+        backgroundColor: Colors.DARKGREY,
         justifyContent : 'center',
         alignItems: 'center',
         width: 100,
