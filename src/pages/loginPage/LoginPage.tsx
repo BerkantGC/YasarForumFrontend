@@ -18,11 +18,12 @@ import { AUTHENTICATED, NOT_AUTHENTICATED } from "../../redux/auth/authTypes";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 
-const LoginForm = ({navigation}) => {
+const LoginForm = () => {
   const dispatch = useDispatch();
  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigation = useNavigation();
 
   const loginUser = async() => {
   
@@ -62,7 +63,7 @@ const LoginForm = ({navigation}) => {
           checkEmail(email) ?  <SubmitButton disabled={false}/> : <SubmitButton disabled={true}/>
         }
         <View id="not_registered_button_view" style={LoginPageStyle.not_registered_button_view}>
-          <TouchableOpacity id="not_registered_button" style={LoginPageStyle.not_registered_button}>
+          <TouchableOpacity onPress={()=>navigation.navigate("Register")} id="not_registered_button" style={LoginPageStyle.not_registered_button}>
                 <Text id="not_registered_button_text" style={LoginPageStyle.not_registered_button_text}>Henüz kayıt olmadın mı?</Text>
           </TouchableOpacity>
         </View>

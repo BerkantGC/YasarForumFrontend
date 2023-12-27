@@ -24,13 +24,15 @@ export default function({modalVisible, setModalVisible}){
                 content : content,
                 createdAt: new Date().toJSON(),
                 anonymous: isAnonymous,
-                likes: 0,
+                numOfLikes: 0,
                 isChecked: false,
                 activated: false
             }]
         }
 
-        await axios.put(BASE_URL + "post/", data, {headers: {"Authorization": `Bearer ${token}`}})
+        console.log(data);
+
+        await axios.post(BASE_URL + "post/", data, {headers: {"Authorization": `Bearer ${token}`}})
         .then((res)=>{
             setModalVisible(false)
         }).catch((error)=>console.error(error))

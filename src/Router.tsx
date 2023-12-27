@@ -16,8 +16,11 @@ const Tab = createBottomTabNavigator();
 import Ionicons from "react-native-vector-icons/Ionicons";
 import ProfilePage from "./pages/profilePage/ProfilePage";
 import Colors from "./utilites/Colors";
-import { AUTHENTICATED } from "./redux/auth/authTypes";
+import { AUTHENTICATED, NOT_AUTHENTICATED } from "./redux/auth/authTypes";
 import NotesPage from "./pages/notesPage/NotesPage";
+import CommentPage from "./pages/commentPage/CommentPage";
+import RegisterPage from "./pages/register/RegisterPage";
+import { initialWindowSafeAreaInsets } from "react-native-safe-area-context";
 
 function Home() {
   return (
@@ -57,11 +60,12 @@ const AuthStack = () => {
         try {
           const tokenValue = await AsyncStorage.getItem("@TOKEN");
           const emailValue = await AsyncStorage.getItem("@EMAIL");
+          console.log(tokenValue)
           if (tokenValue !== null) {
             dispatch({type: AUTHENTICATED, payload: {token: tokenValue, currentUser: {email: emailValue}}})
           }
         } catch (e) {
-          console.log('Failed to fetch the input from storage');
+          console.log('Cannot login.');
         }
       };
       useEffect( ()=> {
@@ -74,6 +78,8 @@ const AuthStack = () => {
             {
                 token !== null ? <Stack.Screen name="Home" component={Home} options={{ headerShown: false }}/> : <Stack.Screen name="Login" component={LoginPage}/>
             }
+            <Stack.Screen name="Register" component={RegisterPage} options={{ headerShown: false }}/>
+            <Stack.Screen name="Comment" component={CommentPage} options={{ headerShown: false }}/>
         </Stack.Navigator>
     </NavigationContainer>
     )

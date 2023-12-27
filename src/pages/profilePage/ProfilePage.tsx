@@ -26,12 +26,15 @@ export default function({navigation}){
         await axios.get(`${BASE_URL}auth/user-info`, {headers: {"Authorization": `Bearer ${token}`}}).then( res =>{
             setData(res.data)
         })
-        await axios.post(`${BASE_URL}post/user-posts`, {"email": user.email}, {headers: {"Authorization": `Bearer ${token}`}}).then( res =>{
+        await axios.get(`${BASE_URL}post/user/${user.email}`, {headers: {"Authorization": `Bearer ${token}`}}).then( res =>{
             setUserPosts(res.data.filter(it=>!(it.anonymous)))
         })
-        await axios.post(`${BASE_URL}note/user-notes`, {"email": user.email}, {headers: {"Authorization": `Bearer ${token}`}}).then( res =>{
+        await axios.get(`${BASE_URL}note/user/${user.email}`, {headers: {"Authorization": `Bearer ${token}`}}).then( res =>{
             setUserNotes(res.data)
         })
+    }
+
+    const fetchProfilePicture = async() => {
         await axios.get(`${BASE_URL}image/${user.email}`,{headers: {"Authorization": `Bearer ${token}`}}).then( res =>{
             setProfileImage(res.config.url)
         })
@@ -40,8 +43,6 @@ export default function({navigation}){
         await AsyncStorage.removeItem("@TOKEN")
         dispatch({type: NOT_AUTHENTICATED, payload: {currentUser: null, token: null}})
     }   
-
-    console.log(profileImage)
 
     const postProfileImage = async(image) => {
         var photo = {
@@ -53,11 +54,13 @@ export default function({navigation}){
         formData.append("image", photo)
         await axios.post(`${BASE_URL}image`, formData, {headers: {'Content-Type': 'multipart/form-data','Accept': 'application/json',"Authorization": `Bearer ${token}`}}).
         then( res =>{
-            fetchUserInfo()
+            fetchProfilePicture()
         }).catch(err => console.log(err))
     }
+
     useEffect(()=> {
-        fetchUserInfo()
+        fetchUserInfo();
+        fetchProfilePicture();
     }, [])
 
         const flatListRef = useRef();

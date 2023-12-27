@@ -6,6 +6,7 @@ import Icon from "react-native-vector-icons/FontAwesome5";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 const ProfilePosts = ({item}) => {
+    console.log(item)
     return(
         <View style={Style.container}>
             <View style={Style.content}>
@@ -15,12 +16,10 @@ const ProfilePosts = ({item}) => {
                     </Text>
                 </View>
                 <View style={Style.likeContainer}>
-                    <TouchableOpacity>
                         <View style={Style.likeButton}>
                             <Icon name="heart" color={Colors.BACKGROUND} size={25}></Icon> 
-                            <Text style={{color:Colors.BACKGROUND, fontSize: 15}}>{item.likes}</Text>
+                            <Text style={{color:Colors.BACKGROUND, fontSize: 15}}>{item.numOfLikes}</Text>
                         </View>
-                    </TouchableOpacity>
                 </View>
             </View>
         </View>

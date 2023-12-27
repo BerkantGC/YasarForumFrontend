@@ -24,7 +24,7 @@ export default function({modalVisible, setModalVisible}){
             notes:  [{
                 title : title,
                 description : description,
-                date: new Date().toJSON(),
+                date: (new Date().toJSON()),
                 isPublic: isPublic,
                 likes: 0,
                 isChecked: false,
@@ -32,7 +32,7 @@ export default function({modalVisible, setModalVisible}){
             }]
         }
 
-        await axios.put(BASE_URL + "note/", data, {headers: {"Authorization": `Bearer ${token}`}})
+        await axios.post(BASE_URL + "note/", data, {headers: {"Authorization": `Bearer ${token}`}})
         .then((res)=>{
             setModalVisible(false)
         }).catch((error)=>console.error(error))

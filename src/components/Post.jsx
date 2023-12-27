@@ -2,10 +2,17 @@ import React from "react";
 import { StyleSheet, Text, View, Dimensions} from "react-native";
 
 import Colors from "../utilites/Colors";
-import Icon from "react-native-vector-icons/FontAwesome5";
+import Icon from "react-native-vector-icons/Ionicons";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { BASE_URL } from "../utilites/BaseURL";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Post = ({item}) => {
+const Post = ({item, navigation, likes, getUserLikes, fetchData}) => {
+    const user = useSelector(selector => selector.currentUser)
+    const token = useSelector(selector => selector.token)
+
     let currentTime =  Math.floor((new Date().getTime() - new Date(item.createdAt).getTime()) / (1000 * 60));
     let currentHour = currentTime/60
     let currentDay = parseInt(currentHour/24)
@@ -24,6 +31,28 @@ const Post = ({item}) => {
          else currentDay = currentTime + " dakika önce"
         }
 
+    async function handleLikePost(){
+        const post ={
+            id: item.post_id
+        }
+
+        await axios.post(BASE_URL + "post/like", post, {headers: {"Authorization": `Bearer ${token}`}})
+        .then((res)=>{
+            fetchData();
+            getUserLikes();
+        }).catch((error)=>console.error(error))
+    }
+    function isLiked(){
+        if(likes === null)
+            return false;
+
+        for(let i = 0; i < likes.length; i++){
+            if(likes[i].post_id === (item.post_id))
+                return true;
+        }
+
+        return false
+    }
 
     return(
         <View style={Style.container}>
@@ -42,21 +71,21 @@ const Post = ({item}) => {
             </View>
             <View style={Style.info}>
                 <View style={Style.likeContainer}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={isLiked() ? null : handleLikePost}>
                         <View style={Style.likeButton}>
-                            <Icon name="heart" color= "white" size={25}></Icon> 
+                            <Icon name={isLiked() ? "heart": "heart-outline"} color= "white" size={30}></Icon>
                             <Text style={{color: "white", fontSize: 10,}}>{item.likes}</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={()=>navigation.navigate("Comment",{email: user.email, postID : item.post_id})}>
                         <View style={Style.likeButton}>
-                            <Icon name="comment" color= "white" size={25}></Icon> 
-                            <Text style={{color: "white", fontSize: 10}}>{item.likes}</Text>
+                            <Icon name="chatbubbles-outline" color= "white" size={30}></Icon> 
+                            <Text style={{color: "white", fontSize: 10}}>{item.comments}</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity>
                         <View style={Style.likeButton}>
-                            <Icon name="paper-plane" color= "white" size={25}></Icon> 
+                            <Icon name="paper-plane-outline" color= "white" size={30}></Icon> 
                             <Text style={{color: "white", fontSize: 10}}>Paylaş</Text>
                         </View>    
                     </TouchableOpacity>
