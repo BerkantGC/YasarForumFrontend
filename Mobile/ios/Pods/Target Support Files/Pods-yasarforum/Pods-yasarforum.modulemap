@@ -1,0 +1,6 @@
+module Pods_yasarforum {
+  umbrella header "Pods-yasarforum-umbrella.h"
+
+  export *
+  module * { export * }
+}
